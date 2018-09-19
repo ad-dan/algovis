@@ -1,0 +1,12 @@
+.App {
+  width: 100vw;
+  min-height: 100vh;
+}
+.labels {
+  display: flex;
+  width: 100%;
+}
+.label {
+  width: 10rem;
+  border: 1px solid blue;
+}
