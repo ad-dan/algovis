@@ -10,3 +10,14 @@
   width: 10rem;
   border: 1px solid blue;
 }
+.valid-cell {
+  background: greenyellow;
+}
+
+.search-cell {
+  background: green;
+}
+
+.invalid-cell {
+  background: palegreen;
+}
