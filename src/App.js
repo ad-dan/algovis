@@ -113,12 +113,17 @@ class App extends Component {
   randomize = () => {
     const arr = this.state.arr
       .map(val => Math.floor(Math.random() * 100))
-      .sort();
+      .sort((first, second) => {
+        if (first > second) return 1;
+        else if (first < second) return -1;
+        return 0;
+      });
     const highIndex = this.state.arr.length - 1;
     const lowIndex = 0;
     const midIndex = this.getMidIndex(lowIndex, highIndex);
     const found = false;
     const finished = false;
+
     this.setState({
       arr,
       highIndex,
