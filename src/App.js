@@ -3,28 +3,65 @@ import './App.css';
 
 const Label = ({ name, val }) => (
   <div className="label">
-    {name}: {val}
+    <div className="title">{val}</div>
+    <div className="subtitle">{name}</div>
   </div>
 );
 
-const Cell = ({ val, paint }) => (
+const Header = () => <div className="header">Binary Search Sim</div>;
+
+const Cell = ({ val, paint, handleInput }) => (
   <div className="cell">
-    <input type="text" value={val} className={paint} />
+    <input
+      type="text"
+      value={val}
+      className={paint + ' zell'}
+      onChange={e => {
+        handleInput(e);
+      }}
+    />
   </div>
 );
 
-const Cells = ({ arr, lowIndex, midIndex, highIndex }) => {
+const Cells = ({ arr, lowIndex, midIndex, highIndex, handleText }) => {
   const cells = arr.map((value, index) => {
     let paint =
       index >= lowIndex && index <= highIndex ? 'valid-cell' : 'invalid-cell';
     paint = index === midIndex ? 'search-cell' : paint;
-    return <Cell val={value} paint={paint} />;
+    return (
+      <Cell val={value} paint={paint} handleInput={e => handleText(e, index)} />
+    );
   });
   return cells;
 };
 
 const StatusMessage = ({ found, searching }) => (
-  <div>{found ? 'Found!' : searching ? 'searching' : 'not found'}</div>
+  <div
+    className={`stat ${searching ? 'searching' : ''}${
+      found ? 'success' : 'failure'
+    }`}>
+    {found ? (
+      <span>
+        <i class="fas fa-check" /> Found
+      </span>
+    ) : searching ? (
+      'Searching'
+    ) : (
+      <span>
+        <i className="ic far fa-frown" />
+        Not Found
+      </span>
+    )}
+    {searching ? (
+      <span>
+        <span className="dots">.</span>
+        <span className="dots">.</span>
+        <span className="dots">.</span>
+      </span>
+    ) : (
+      ''
+    )}
+  </div>
 );
 
 class App extends Component {
@@ -134,8 +171,36 @@ class App extends Component {
       finished
     });
   };
+  changeCell = (e, i) => {
+    const inp =
+      e.target.value === '' ? 0 : e.target.value.replace(/^0|\D+/g, '');
+    console.log(inp);
+    console.log('I am here!');
+    console.log(e.target.value);
+    const arr = [...this.state.arr];
+    arr[i] = +inp;
+    const sorted = arr.sort((first, second) => {
+      if (first > second) return 1;
+      else if (first < second) return -1;
+      return 0;
+    });
+    const highIndex = this.state.arr.length - 1;
+    const lowIndex = 0;
+    const midIndex = this.getMidIndex(lowIndex, highIndex);
+    const found = false;
+    const finished = false;
+    this.setState({
+      arr: sorted,
+      highIndex,
+      lowIndex,
+      midIndex,
+      displayMid: midIndex,
+      found,
+      finished
+    });
+  };
   changeSearch = e => {
-    const searchVal = e.target.value;
+    const searchVal = +e.target.value.replace(/\D/g, '');
     const highIndex = this.state.arr.length - 1;
     const lowIndex = 0;
     const midIndex = this.getMidIndex(lowIndex, highIndex);
@@ -154,35 +219,55 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-        <div className="labels">
-          <Label name="Low" val={this.state.lowIndex} />
-          <Label name="Mid" val={this.state.midIndex} />
-          <Label name="High" val={this.state.highIndex} />
+        <Header />
+        <div className="buttons">
+          <div>
+            <button onClick={this.addCell}>
+              <i className="fas fa-plus" />
+            </button>
+          </div>
+          <div>
+            <button onClick={this.stepUp}>
+              <i className="fas fa-play" />
+            </button>
+          </div>
+
+          <div>
+            <button onClick={this.randomize}>
+              <i className="fas fa-random" />
+            </button>
+          </div>
         </div>
+
         <div className="array">
           <Cells
+            handleText={this.changeCell}
             arr={this.state.arr}
             lowIndex={this.state.lowIndex}
             midIndex={this.state.displayMid}
             highIndex={this.state.highIndex}
           />
         </div>
-        <div>
-          <button onClick={this.stepUp}>Step up</button>
+
+        <div className="labels">
+          <Label name="Low" val={this.state.lowIndex} />
+          <Label name="Mid" val={this.state.midIndex} />
+          <Label name="High" val={this.state.highIndex} />
         </div>
-        <div>
-          <button onClick={this.addCell}>Add cell</button>
-        </div>
-        <div>
-          <button onClick={this.randomize}>Randomize</button>
-        </div>
-        <div>
-          Search for:{' '}
-          <input value={this.state.searchVal} onChange={this.changeSearch} />
+        <div className="search">
+          <div className="icon">
+            <i className="fas fa-search" />
+          </div>
+
+          <input
+            id="search-box"
+            value={this.state.searchVal}
+            onChange={this.changeSearch}
+          />
         </div>
         <StatusMessage
           found={this.state.found}
-          searching={this.state.searching}
+          searching={!this.state.finished}
         />
       </div>
     );
