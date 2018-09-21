@@ -1,68 +1,9 @@
 import React, { Component } from 'react';
 import './App.css';
-
-const Label = ({ name, val }) => (
-  <div className="label">
-    <div className="title">{val}</div>
-    <div className="subtitle">{name}</div>
-  </div>
-);
-
-const Header = () => <div className="header">Binary Search Sim</div>;
-
-const Cell = ({ val, paint, handleInput }) => (
-  <div className="cell">
-    <input
-      type="text"
-      value={val}
-      className={paint + ' zell'}
-      onChange={e => {
-        handleInput(e);
-      }}
-    />
-  </div>
-);
-
-const Cells = ({ arr, lowIndex, midIndex, highIndex, handleText }) => {
-  const cells = arr.map((value, index) => {
-    let paint =
-      index >= lowIndex && index <= highIndex ? 'valid-cell' : 'invalid-cell';
-    paint = index === midIndex ? 'search-cell' : paint;
-    return (
-      <Cell val={value} paint={paint} handleInput={e => handleText(e, index)} />
-    );
-  });
-  return cells;
-};
-
-const StatusMessage = ({ found, searching }) => (
-  <div
-    className={`stat ${searching ? 'searching' : ''}${
-      found ? 'success' : 'failure'
-    }`}>
-    {found ? (
-      <span>
-        <i class="fas fa-check" /> Found
-      </span>
-    ) : searching ? (
-      'Searching'
-    ) : (
-      <span>
-        <i className="ic far fa-frown" />
-        Not Found
-      </span>
-    )}
-    {searching ? (
-      <span>
-        <span className="dots">.</span>
-        <span className="dots">.</span>
-        <span className="dots">.</span>
-      </span>
-    ) : (
-      ''
-    )}
-  </div>
-);
+import Cells from './components/Cells';
+import Label from './components/Label';
+import StatusMessage from './components/StatusMessage';
+import Header from './components/Header';
 
 class App extends Component {
   constructor() {
